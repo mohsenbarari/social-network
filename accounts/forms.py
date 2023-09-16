@@ -32,6 +32,11 @@ class UserRegisterForm(forms.Form):
         if user:
             raise ValidationError("Your username is already registered")
         return username
+    
+
+class UserLoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={"class":"form-control","placeholder":"your username"}))
+    password = forms.CharField(label="password",widget=forms.PasswordInput(attrs={"class":"form-control","placeholder":"your password"}))
 
 
 
