@@ -1,6 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib import messages
-from django.contrib.auth import login , authenticate
+from django.contrib.auth import login , authenticate , logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
 from django.contrib.auth.models import User
 from .forms import UserRegisterForm,UserLoginForm
@@ -22,6 +23,8 @@ class UserRgisterView(View):
             cd = form.cleaned_data
             User.objects.create_user(cd["username"],cd["email"],cd["password1"])
             messages.success(request,f"Hi {cd['username']}! you'r registered","success")
+            user = authenticate(request,username=cd["username"],password=cd ["password1"])
+            login(request,user)
             return redirect("home:index")
         else:
             return render(request,self.template_page,{
@@ -49,3 +52,10 @@ class UserLoginView(View):
                 return redirect("home:index")
             messages.error(request,"username or password is wrong","danger")
             return redirect("accounts:user-login")
+
+
+class UserLogoutView(LoginRequiredMixin,View):
+    def get(self,request):
+        logout(request)
+        messages.success(request,"you loged out","success")
+        return redirect("home:index")
