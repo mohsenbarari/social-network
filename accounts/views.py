@@ -11,6 +11,13 @@ class UserRgisterView(View):
     form_class = UserRegisterForm
     template_page = "accounts/register.html"
 
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("home:index")
+        return super().dispatch(request, *args, **kwargs)
+    
+
     def get(self,request):
         form = self.form_class
         return render(request,self.template_page,{
@@ -35,11 +42,17 @@ class UserLoginView(View):
     form_class = UserLoginForm
     template_page = "accounts/login.html"
 
+    def dispatch(self, request, *args, **kwargs):
+        if request.user.is_authenticated:
+            return redirect("home:index")
+        return super().dispatch(request, *args, **kwargs)
+
     def get(self,request):
         form = self.form_class()
         return render(request,self.template_page,{
             "form":form
         })
+        
 
     def post(self,request):
         form = self.form_class(request.POST)
