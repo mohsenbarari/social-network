@@ -2,4 +2,7 @@
 {% block title %}profile {{ user.username }}{% endblock title %}
 {% block content %}
     <p class="text-center">{{ user.username }}</P>
+    {% for post in posts %}
+        <a class="card-body" href="#">{{ post.title }}</a><br><hr>
+    {% endfor %}
 {% endblock content %}
