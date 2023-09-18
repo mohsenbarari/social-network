@@ -1,12 +1,12 @@
 from django.shortcuts import render
-
 from django.views import View
+from .models import Post
 
 
 class IndexView(View):
     def get(self,request):
-        contents = "Hi there, welcome to index page"
+        posts = Post.objects.all()
         return render(request,"home/home.html",{
-            "contents":contents
+            "posts":posts
         })
 
