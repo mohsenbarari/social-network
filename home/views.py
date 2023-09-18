@@ -10,3 +10,10 @@ class IndexView(View):
             "posts":posts
         })
 
+class DetailPostView(View):
+    def get(self,request,post_id,post_slug):
+        post = Post.objects.get(pk=post_id,slug=post_slug)
+        return render (request,"home/detail.html",{
+            "post":post,
+            
+        })

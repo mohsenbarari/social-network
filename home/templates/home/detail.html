@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    <p>{{ post.title }}</P><br>
+    <p>{{ post.body }}</P><hr><br>
+    <small>
+        creaed by:<a class="card-body" href="{% url 'accounts:user-profile' post.user.id %}">{{ post.user }}</a> | creaed at: {{ post.created|date:"Y M d" }}
+    </small>
+{% endblock content %}
