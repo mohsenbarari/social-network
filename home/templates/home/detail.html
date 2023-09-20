@@ -1,5 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
+    {% if request.user.id == post.user.id %}
+        <a href={% url 'home:post-delete' post.id %} class="btn btn-danger">Delete</a>
+    {% endif %}
     <p>{{ post.title }}</P><br>
     <p>{{ post.body }}</P><hr><br>
     <small>
