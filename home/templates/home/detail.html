@@ -1,7 +1,10 @@
 {% extends "base.html" %}
+{% block title %}{{ post.title }}{% endblock title %}
 {% block content %}
     {% if request.user.id == post.user.id %}
         <a href={% url 'home:post-delete' post.id %} class="btn btn-danger">Delete</a>
+        <a href={% url 'home:post-update' post.id %} class="btn btn-info">Update</a>
+
     {% endif %}
     <p>{{ post.title }}</P><br>
     <p>{{ post.body }}</P><hr><br>
