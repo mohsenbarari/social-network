@@ -1,6 +1,10 @@
 {% extends "base.html" %}
-{% block title %}profile {{ user.username }}{% endblock title %}
+{% block title %}profile{{ user.username }}{% endblock title %}
+
 {% block content %}
+    {% if request.user.id == user.id %}
+        <a class="btn btn-info" href="{% url 'home:post-create' %}">Create post</a><hr>
+    {% endif %}
     <p class="text-center">{{ user.username }}</P>
     {% for post in posts %}
         <a class="card-body" href="{{ post.get_absolute_url }}">{{ post.title }}</a><br><hr>

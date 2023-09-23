@@ -1,11 +1,11 @@
-from typing import Any
-from django import http
 from django.shortcuts import render,redirect
 from django.views import View
 from .models import Post
 from django.contrib import messages
-from .forms import PostUpdateForm
+from .forms import PostUpdateForm,PostCreateForm
 from django.utils.text import slugify
+from django.contrib.auth.mixins import LoginRequiredMixin
+
 
 
 class IndexView(View):
@@ -14,6 +14,7 @@ class IndexView(View):
         return render(request,"home/home.html",{
             "posts":posts
         })
+
 
 class PostDetailView(View):
     def get(self,request,post_id,post_slug):
@@ -24,7 +25,7 @@ class PostDetailView(View):
         })
     
 
-class PostDeleteView(View):
+class PostDeleteView(LoginRequiredMixin,View):
 
     def get(self,request,post_id):
         post = Post.objects.get(pk=post_id)
@@ -36,7 +37,7 @@ class PostDeleteView(View):
         return redirect('home:index')
     
 
-class PostUpdateView(View):
+class PostUpdateView(LoginRequiredMixin,View):
     form_class = PostUpdateForm
     template_page = "home/update.html"
 
@@ -68,5 +69,35 @@ class PostUpdateView(View):
             new_post.save()
             messages.success(request,"update post is ok","success")
             return redirect("home:post-detail" ,post.id, post.slug)
+        
+
+class PostCreateView(LoginRequiredMixin,View):
+    form_class = PostCreateForm
+    template_page = "home/create.html"
+
+    def get(self,request):
+        form = self.form_class()
+        return render(request,self.template_page,{
+            "form":form,
+        })
+
+    def post(self,request):
+        form = self.form_class(request.POST)
+        if form.is_valid():
+            cd = form.cleaned_data
+            new_post = form.save(commit=False)
+            new_post.user = request.user
+            new_post.title = cd["title"]
+            new_post.body = cd["body"]
+            new_post.slug = slugify(cd["title"])
+            new_post.save()
+            messages.success(request,"your poast creted")
+            return redirect("home:post-detail",new_post.id,new_post.slug)
+
+
+
+
+
+
 
 
