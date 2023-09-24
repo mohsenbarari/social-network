@@ -1,3 +1,5 @@
+from typing import Any
+from django import http
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth import login , authenticate , logout
@@ -11,7 +13,10 @@ from home.models import Post
 class UserRgisterView(View):
     form_class = UserRegisterForm
     template_page = "accounts/register.html"
-
+    
+    def setup(self,request,*args,**kwargs):
+        self.next = request.GET.get("next")
+        return super().setup(request,*args,**kwargs)
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -33,6 +38,8 @@ class UserRgisterView(View):
             messages.success(request,f"Hi {cd['username']}! you'r registered","success")
             user = authenticate(request,username=cd["username"],password=cd ["password1"])
             login(request,user)
+            if self.next:
+                return redirect(self.next)
             return redirect("home:index")
         else:
             return render(request,self.template_page,{
@@ -42,6 +49,10 @@ class UserRgisterView(View):
 class UserLoginView(View):
     form_class = UserLoginForm
     template_page = "accounts/login.html"
+
+    def setup(self, request, *args, **kwargs):
+        self.next = request.GET.get("next")
+        return super().setup(request, *args, **kwargs)
 
     def dispatch(self, request, *args, **kwargs):
         if request.user.is_authenticated:
@@ -63,6 +74,9 @@ class UserLoginView(View):
             if user is not None:
                 login(request,user)
                 messages.success(request,f"Hi {request.user}! your welcome","success")
+                if self.next:
+                    return redirect(self.next)
+                
                 return redirect("home:index")
             messages.error(request,"username or password is wrong","danger")
             return redirect("accounts:user-login")
