@@ -4,6 +4,7 @@ from django.urls import reverse
 
 
 
+
 class Post(models.Model):
     title = models.CharField(max_length=50)
     body = models.TextField(max_length=700)
@@ -14,3 +15,7 @@ class Post(models.Model):
 
     def get_absolute_url(self):
         return reverse("home:post-detail",args=(self.id,self.slug))
+    
+class Like(models.Model):
+    post = models.ForeignKey(Post,on_delete=models.CASCADE,related_name="plike")
+    user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="ulike")

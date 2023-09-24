@@ -1,5 +1,3 @@
-from typing import Any
-from django import http
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.contrib.auth import login , authenticate , logout
